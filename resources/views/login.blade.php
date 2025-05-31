@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <title>Login</title>
 </head>
 <body style="background-color: #00674F;">
@@ -14,30 +15,36 @@
         <div style="display: flex; justify-content: center; align-items: center; height: 80vh;">
             <div style="background:#F8EDD5; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); width: 100%; max-width: 600px;">
                 @if(session('success'))
-                    <p style="color: green; text-align: center; margin-bottom: 1rem;">{{ session('success') }}</p>
+                    <p style="color: green; text-align: center; margin-bottom: 1rem;" id="success">{{ session('success') }}</p>
+                    @else
+                    <p style="color: green; text-align: center; margin-bottom: 1rem; display: none;" id="success"></p>
                 @endif
                 @if(session('error'))
-                    <p style="color: red; text-align: center; margin-bottom: 1rem;">{{ session('error') }}</p>
+                    <p style="color: red; text-align: center; margin-bottom: 1rem;" id="error">{{ session('error') }}</p>
+                    @else
+                    <p style="color: green; text-align: center; margin-bottom: 1rem; display: none;" id="error"></p>
                 @endif
 
                 <h2 style="text-align: center; margin-bottom: 1.5rem; color: #333;">Login</h2>
-                <form action="{{ route('login') }}" method="POST" style="display: flex; flex-direction: column; gap: 1rem;">
+                <form action="{{ route('login') }}" id="login-form" method="POST" style="display: flex; flex-direction: column; gap: 1rem;">
                     @csrf
                     <div>
                         <label for="email" style="display: block; margin-bottom: 0.5rem; color: #555; font-weight:bold;">Email</label>
                         <input type="text" id="email" name="email" value="{{ old('email') }}" placeholder="Enter your email"
                             style="width: 100%; padding: 0.75rem; border: none; border-bottom: 1px solid #00674F; border-radius: 0; font-size: 1rem; background-color: #F8EDD5; box-shadow: 0 2px 4px #0000000A; outline: none;">
-                        @error('email')
+                            <span style="color: red; font-size: 0.875rem; display: none;" id="email-error"></span>
+                            <!-- @error('email')
                             <span style="color: red; font-size: 0.875rem;">{{ $message }}</span>
-                        @enderror
+                        @enderror -->
                     </div>
                     <div>
                         <label for="password" style="display: block; margin-bottom: 0.5rem; color: #555; font-weight:bold;">Password</label>
                         <input type="password" id="password" name="password" value="{{ old('password') }}" placeholder="Enter your password"
                             style="width: 100%; padding: 0.75rem; border: none; border-bottom: 1px solid #00674F; border-radius: 0; font-size: 1rem; background-color: #F8EDD5; box-shadow: 0 2px 4px #0000000A; outline: none;">
-                        @error('password')
+                            <span style="color: red; font-size: 0.875rem; display: none;" id="password-error"></span>
+                            <!-- @error('password')
                             <span style="color: red; font-size: 0.875rem;">{{ $message }}</span>
-                        @enderror
+                        @enderror -->
                     </div>
                     <div>
                         <div class="d-flex justify-content-between align-items-center mt-3">
@@ -54,5 +61,21 @@
             </div>
         </div>
     </div>
+    <script>
+        $(document).ready(function(){
+            $('#login-form').submit(function(e){
+                if(!$('#email').val()){
+                    $('#email-error').show().text('Email is required').fadeOut(3000);
+                    e.preventDefault();
+                }
+                if(!$('#password').val()){
+                    $('#password-error').show().text('Password is required').fadeOut(3000);
+                    e.preventDefault();
+                }
+            })
+            $('#success').fadeOut(3000)
+            $('#error').fadeOut(3000)
+        })
+    </script>
 </body>
 </html>

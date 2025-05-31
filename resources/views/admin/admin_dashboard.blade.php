@@ -1,4 +1,9 @@
-hi this is admin dashboard <form action="{{ route('logout') }}" method="POST" style="display: inline;">
-    @csrf
-    <button type="submit">Logout</button>
-</form>
+
+@extends('layouts.template')
+
+@section('title', 'Admin Dashboard')
+
+@section('content')
+    <h1>Welcome to the Admin Dashboard</h1>
+    
+@endsection
