@@ -25,12 +25,12 @@ Route::get('/customer/dashboard', [AuthController::class, 'custDashboard'])->nam
 Route::controller(ClientController::class)->group(function () {
     Route::get('/', 'index')->name('clientHome');
     Route::get('/products', 'products')->name('clientProducts');
-    Route::get('/product/{id}', 'productDetail')->name('clientProductDetail');
+    Route::get('/product/{id}', 'productDetail')->name('clientProductDetail'); // Naka-ID na
     Route::get('/categories', 'category')->name('clientCategory');
-    Route::get('/category/{id}', 'categoryProducts')->name('clientCategoryProducts');
+    Route::get('/category/{id}', 'categoryProducts')->name('clientCategoryProducts'); // Naka-ID na
     Route::get('/about', 'about')->name('clientAbout');
     Route::post('/search', 'searchProduct')->name('clientSearch');
- });
+});
 
 // Cart actions (these remain public for guests to build their cart)
 Route::controller(CartController::class)->group(function () {

@@ -9,7 +9,7 @@
             <a href="{{ route('clientProducts') }}"
                 style="margin: 0 10px; text-decoration: none; color: #5b21b6; font-weight: bold;">All Categories</a>
             @foreach ($category as $cat)
-                <a href="{{ route('clientCategoryProducts', Str::slug($cat->name)) }}"
+                <a href="{{ route('clientCategoryProducts', $cat->id) }}"
                     style="margin: 0 10px; text-decoration: none; color: #333;">{{ $cat->name }}</a>
             @endforeach
         </div>
@@ -88,7 +88,8 @@
                                 Swal.fire({
                                     icon: 'warning',
                                     title: 'Stock Limit',
-                                    text: 'Failed to add ' + productTitle + '. Quantity exceeds available stock.',
+                                    text: 'Failed to add ' + productTitle +
+                                        '. Quantity exceeds available stock.',
                                 });
                             } else {
                                 Swal.fire({
