@@ -5,25 +5,19 @@
         @if ($category) {{-- Check if the category exists --}}
             <h2 class="section-heading">Products in "{{ $category->name }}"</h2>
 
-            @if ($category->product->count() > 0)
+            @if ($products && $products->count() > 0)
                 <div class="product-grid">
-                    @foreach ($category->product as $item)
-                        {{-- Access products via the category relationship --}}
+                    @foreach ($products as $item)
                         <div class="product-card">
-                            <img src="{{ asset($item->productImage->first()->path ?? 'images/default-product.png') }}"
-                                alt="{{ $item->title }}">
-                            <h3><a href="{{ route('clientProductDetail', Str::slug($item->title)) }}">{{ $item->title }}</a>
-                            </h3>
+                            <img src="{{ asset($item->image_path ?? 'images/default-product.png') }}" alt="{{ $item->title }}">
+                            <h3><a href="{{ route('clientProductDetail', $item->id) }}">{{ $item->title }}</a>
+                        </h3>
                             <p>₱{{ number_format($item->price, 2) }}</p>
                             <button class="add-to-cart-btn" data-product-id="{{ $item->id }}"
-                                data-product-stock="{{ $item->stock }}" data-product-title="{{ $item->title }}">Add to
-                                Cart</button>
+                                data-product-stock="{{ $item->stock }}" data-product-title="{{ $item->title }}">Add to Cart</button>
                         </div>
                     @endforeach
                 </div>
-                {{-- NOTE: Walang pagination dito sa Blade, dahil sa ClientController mo,
-                     ang `$category->product` ay hindi naka-paginate. Kung gusto mo ng pagination,
-                     kailangan mo i-adjust ang logic sa `ClientController->categoryProducts()` method. --}}
             @else
                 <p style="text-align: center;">No products found in this category.</p>
             @endif

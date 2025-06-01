@@ -17,14 +17,18 @@ class ClientController extends Controller
      * Ito ang home page ng website.
      * Dito makikita ang impormasyon ng shop at mga bagong kategorya/produkto.
      */
-    public function index(){
-        $data = [
-            'category' => Category::all()->sortByDesc('id')->take(4), // Kukunin ang 4 na pinakabagong kategorya
-            'title' => 'Home' // Ang titulo ng page
-        ];
+    public function index()
+        {
+            $shop = Shop::first();
+            $categories = Category::all();
+            $products = Product::latest()->take(8)->get(); // Or paginate()
 
-        return view('client.index', $data); // Ibabalik ang 'index' view
-    }
+            return view('client.index', [
+                'shop' => $shop,
+                'category' => $categories,
+                'products' => $products,
+            ]);
+        }
 
     /**
      * Ipinapakita nito ang lahat ng produkto na available.
@@ -32,7 +36,8 @@ class ClientController extends Controller
      */
     public function products(){
         $data = [
-            'product' => Product::orderBy('id', 'DESC')->paginate(16), // Kukunin ang mga produkto, 16 per page
+            'shop' => Shop::first(), // Kukunin ang impormasyon ng shop
+            'products' => Product::orderBy('id', 'DESC')->paginate(16), // Kukunin ang mga produkto, 16 per page
             'category' => Category::all()->sortByDesc('id'), // Kukunin ang lahat ng kategorya
             'title' => 'Products' // Ang titulo ng page
         ];
@@ -55,6 +60,7 @@ class ClientController extends Controller
             $searchTerm = $request->product; // Ang hinahanap na term
             $data = [
                 'title' => 'Search Results for ' . $searchTerm, // Titulo ng search results
+                'shop' => Shop::first(), // Impormasyon ng shop
                 'product' => Product::where('title', 'LIKE', '%'.$searchTerm.'%')->orderBy('id', 'DESC')->paginate(20), // Hanapin ang mga produkto na may tugmang title
                 'search' => $searchTerm // Ang search term para sa view
             ];
@@ -66,58 +72,73 @@ class ClientController extends Controller
     /**
      * Ipinapakita nito ang listahan ng lahat ng kategorya ng produkto.
      */
-    public function category(){
-        $data = [
-            'category' => Category::orderBy('id', 'DESC')->paginate(12), // Kukunin ang mga kategorya, 12 per page
-            'title' => 'Categories' // Ang titulo ng page
-        ];
+    public function category()
+    {
+        $shop = Shop::first();
+        $categories = Category::orderByDesc('id')->paginate(12);
+        $products = Product::latest()->take(8)->get();
 
-        return view('client.category', $data); // Ibabalik ang 'category' view
+        return view('client.category', [
+            'shop' => $shop,
+            'category' => $categories,
+            'products' => $products,
+        ]);
     }
 
     /**
      * Ipinapakita nito ang lahat ng produkto sa ilalim ng isang partikular na kategorya.
      */
-    public function categoryProducts($name_slug){
-        $category = Category::where('slug', $name_slug)->firstOrFail(); // Hahanapin ang kategorya gamit ang slug, o mag-404 kung wala
+    public function categoryProducts($id)
+        {
+            $shop = Shop::first();
+            $category = Category::with('products')->findOrFail($id);
 
-        $data = [
-            'category' => $category, // Ang kategorya na napili
-            'products' => $category->products()->orderBy('id', 'DESC')->paginate(16), // Kukunin ang mga produkto sa ilalim ng kategorya
-            'title' => 'Category - '. str_replace('-', ' ', ucwords($category->name)) // Titulo ng page batay sa pangalan ng kategorya
-        ];
+            // Assign products to a variable, not null
+            $products = $category->products;
 
-        return view('client.categoryProducts', $data); // Ibabalik ang 'categoryProducts' view
-    }
+            return view('client.categoryProducts', [
+                'shop' => $shop,
+                'category' => $category,
+                'products' => $products,  // pass products explicitly
+            ]);
+        }
+
 
     /**
      * Ipinapakita nito ang detalyadong impormasyon ng isang produkto.
      * Mayroon din itong rekomendasyon ng ibang produkto.
      */
-    public function productDetail($title_slug){
-        $product = Product::where('slug', $title_slug)->firstOrFail(); // Hahanapin ang produkto gamit ang slug, o mag-404 kung wala
+    public function productDetail($id) {
+        $product = Product::findOrFail($id); // Find product by ID or fail
 
-        // Kukunin ang mga rekomendasyon ng produkto
-        if($product->category && $product->category->product->count() > 1){
-            $recomendationProducts = $product->category->product->where('id', '!=', $product->id)->take(8); // Mga produkto sa parehong kategorya, maliban sa kasalukuyan
-        }else{
-            $recomendationProducts = Product::where('id', '!=', $product->id)->orderByDesc('id')->take(8); // Iba pang produkto kung walang kategorya o iisa lang
-        }
-
+        // Recommendations (same logic)
+        if ($product->category && $product->category->products->count() > 1) {
+                $recomendationProducts = $product->category->products
+                    ->where('id', '!=', $product->id)
+                    ->take(8);
+            } else {
+                $recomendationProducts = Product::where('id', '!=', $product->id)
+                    ->orderByDesc('id')
+                    ->take(8)
+                    ->get();
+            }
         $data = [
-            'product' => $product, // Ang detalyadong produkto
-            'recomendationProducts' => $recomendationProducts, // Mga rekomendasyon
-            'title' => Str::title(str_replace('-', ' ', $product->title)) // Titulo ng page batay sa pangalan ng produkto
+            'shop' => Shop::first(),
+            'product' => $product,
+            'recomendationProducts' => $recomendationProducts,
+            'title' => Str::title(str_replace('-', ' ', $product->title))
         ];
 
-        return view('client.productDetail', $data); // Ibabalik ang 'productDetail' view
+        return view('client.productDetail', $data);
     }
+
 
     /**
      * Ipinapakita nito ang "About Us" page ng website.
      */
     public function about(){
         $data = [
+            'shop' => Shop::first(), // Kukunin ang impormasyon ng shop
             'title' => 'About' // Ang titulo ng page
         ];
 

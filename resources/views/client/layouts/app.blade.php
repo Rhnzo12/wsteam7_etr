@@ -21,7 +21,7 @@
         }
 
         .header {
-            background-color: #00674F;
+            background-color: #155724;
             padding: 15px 20px;
             display: flex;
             justify-content: space-between;
@@ -41,13 +41,13 @@
 
         .header .nav-links a {
             text-decoration: none;
-            color: white;
+            color: #ffffff;
             font-weight: bold;
             font-size: 16px;
         }
 
         .header .nav-links a:hover {
-            color: #30EABE;
+            color:rgb(0, 0, 0);
             /* Purple hover for links */
         }
 
@@ -66,7 +66,7 @@
         }
 
         .header .icons .cart-count {
-            background-color:#00674F;
+            background-color: #155724;
             /* Purple background for cart count */
             color: white;
             font-size: 12px;
@@ -126,7 +126,7 @@
         }
 
         .header .search-container #search-form button[type="submit"] {
-            background-color: #00674F;
+            background-color: #155724;
             color: white;
             border: none;
             padding: 8px 12px;
@@ -155,7 +155,7 @@
 
         .hero-section h1 {
             font-size: 3em;
-            color: #00674F;
+            color: #155724;
             /* Purple */
             margin-bottom: 20px;
         }
@@ -171,7 +171,7 @@
         .section-heading {
             text-align: center;
             font-size: 2.5em;
-            color: #00674F;
+            color: #155724;
             margin-bottom: 30px;
             margin-top: 50px;
         }
@@ -216,7 +216,7 @@
 
         .product-card p {
             font-size: 1.1em;
-            color: #00674F;
+            color: #155724;
             font-weight: bold;
         }
 
@@ -230,7 +230,7 @@
             width: fit-content;
             margin: 40px auto;
             padding: 15px 30px;
-            background-color: #00674F;
+            background-color: #155724;
             color: white;
             text-decoration: none;
             border-radius: 30px;
@@ -243,7 +243,7 @@
         }
 
         .btn-more:hover {
-            background-color:#00674F;
+            background-color: #155724;
         }
 
         .btn-more .arrow {
@@ -267,8 +267,9 @@
         <div class="logo">
             <a href="{{ route('clientHome') }}">
                 {{-- UPDATED: Shop Logo to be dynamic from database, with fallback --}}
-                <img src="{{ asset('images/logo.png') }}"
-                    alt="{{ $shop->name_shop ?? 'Shop Logo' }}" style="height:80px; width:120px; object-fit:contain;">
+                <a href="/" class="d-flex align-items-center text-decoration-none">
+                <img src="{{ asset('images/logo.png') }}" alt="Logo" style="height:80px; width:120px; object-fit:contain;">
+                </a>
                 {{-- Make sure 'images/default-logo.png' exists in your public folder --}}
                 {{-- AND ensure 'php artisan storage:link' has been run --}}
             </a>
@@ -285,7 +286,7 @@
         <div class="icons">
             {{-- Search Icon and Inline Search Form --}}
             <div class="search-container">
-                <a href="#" id="search-icon-toggle"><i class="fas fa-search"></i></a>
+                <a href="#" id="search-icon-toggle"><i class="fas fa-search" style="color: #ffffff;"></i></a>
                 <form action="{{ route('clientSearch') }}" method="POST" id="search-form">
                     @csrf
                     <input type="text" name="product" placeholder="Search..." required>
@@ -294,8 +295,8 @@
             </div>
 
             <a href="{{ route('clientCart') }}">
-                <i class="fas fa-shopping-cart"></i>
-                <span class="cart-count" id="cart-count">
+                <i class="fas fa-shopping-cart" style="color: #ffffff;"></i>
+                <span class="cart-count" id="cart-count" style="background-color:rgb(74, 178, 98);">
                     {{ session('cart') ? count((array) session('cart')) : 0 }}
                 </span>
             </a>
@@ -307,8 +308,8 @@
     </main>
 
     <footer class="footer">
-        <p>&copy; {{ date('Y') }} {{ $shop->name_shop ?? 'Your Shop Name' }}. All rights reserved.</p>
-        <p>Contact us: {{ $shop->phone ?? 'N/A' }} | {{ $shop->address ?? 'N/A' }}</p>
+        <p>&copy; {{ date('Y') }} {{ $shop->name_shop ?? 'Crispa Clothing' }}. All rights reserved.</p>
+        <p>Get in touch: +639275312958 | Visit us at: San Vicente, Urdaneta City</p>
     </footer>
 
     {{-- Optional: Import Font Awesome for icons (if you want the search and cart icons) --}}

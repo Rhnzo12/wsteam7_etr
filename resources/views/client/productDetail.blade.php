@@ -4,23 +4,12 @@
     <section class="container" style="padding: 40px 0;">
         @if ($product)
             <div class="product-detail-container" style="display: flex; flex-wrap: wrap; gap: 40px; justify-content: center;">
-                {{-- Product Image Gallery --}}
+                {{-- Product Image --}}
                 <div class="product-images" style="flex: 1; min-width: 300px; max-width: 500px; text-align: center;">
-                    @if ($product->productImage->count() > 0)
-                        {{-- Main Image --}}
-                        <img id="main-product-image" src="{{ asset($product->productImage->first()->path) }}"
+                    @if (!empty($product->image_path))
+                        <img id="main-product-image" src="{{ asset($product->image_path) }}"
                             alt="{{ $product->title }}"
                             style="max-width: 100%; height: auto; max-height: 450px; object-fit: contain; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
-
-                        {{-- Thumbnails --}}
-                        <div class="thumbnail-images"
-                            style="display: flex; gap: 10px; justify-content: center; margin-top: 15px;">
-                            @foreach ($product->productImage as $image)
-                                <img src="{{ asset($image->path) }}" alt="{{ $product->title }} thumbnail" class="thumbnail"
-                                    style="width: 80px; height: 80px; object-fit: cover; border-radius: 4px; cursor: pointer; border: 1px solid #ddd; transition: border 0.2s;"
-                                    onclick="changeMainImage(this.src)">
-                            @endforeach
-                        </div>
                     @else
                         <img src="{{ asset('images/default-product.png') }}" alt="Default Product Image"
                             style="max-width: 100%; height: auto; max-height: 450px; object-fit: contain; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
@@ -32,8 +21,7 @@
                     <h1 style="font-size: 2.5em; color: #333; margin-bottom: 10px;">{{ $product->title }}</h1>
                     <p style="font-size: 1.8em; color: #5b21b6; font-weight: bold; margin-bottom: 20px;">
                         ₱{{ number_format($product->price, 2) }}</p>
-                    <p style="font-size: 1.1em; color: #555; line-height: 1.6; margin-bottom: 25px;">{{ $product->desc }}
-                    </p>
+                    <p style="font-size: 1.1em; color: #555; line-height: 1.6; margin-bottom: 25px;">{{ $product->desc }}</p>
 
                     <div class="stock-info" style="font-size: 1.1em; margin-bottom: 25px;">
                         @if ($product->stock > 0)
@@ -43,6 +31,7 @@
                         @endif
                     </div>
 
+                    {{-- Add to Cart --}}
                     <div class="add-to-cart-section" style="display: flex; align-items: center; gap: 20px;">
                         <label for="quantity" style="font-weight: bold; font-size: 1.1em;">Quantity:</label>
                         <input type="number" id="quantity" value="1" min="1" max="{{ $product->stock }}"
@@ -56,25 +45,6 @@
                     </div>
                 </div>
             </div>
-
-            {{-- Recommendation Products Section --}}
-            <section class="container" style="margin-top: 80px;">
-                <h2 class="section-heading">You might also like</h2>
-                <div class="product-grid">
-                    @forelse($recomendationProducts as $recProduct)
-                        <div class="product-card">
-                            <img src="{{ asset($recProduct->productImage->first()->path ?? 'images/default-product.png') }}"
-                                alt="{{ $recProduct->title }}">
-                            <h3><a
-                                    href="{{ route('clientProductDetail', Str::slug($recProduct->title)) }}">{{ $recProduct->title }}</a>
-                            </h3>
-                            <p>₱{{ number_format($recProduct->price, 2) }}</p>
-                        </div>
-                    @empty
-                        <p style="text-align: center; grid-column: 1 / -1;">No recommendations available.</p>
-                    @endforelse
-                </div>
-            </section>
         @else
             <p style="text-align: center; font-size: 1.2em; color: #888;">Product not found.</p>
         @endif
@@ -82,37 +52,22 @@
 
     @push('scripts')
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script>
-            // Function to change the main product image when a thumbnail is clicked
-            function changeMainImage(src) {
-                document.getElementById('main-product-image').src = src;
-            }
-
-            $(document).ready(function() {
-                // Highlight current thumbnail (optional)
-                $('.thumbnail').on('click', function() {
-                    $('.thumbnail').css('border', '1px solid #ddd'); // Reset all
-                    $(this).css('border', '1px solid #5b21b6'); // Highlight clicked
-                });
-
-                $('#add-to-cart-btn-detail').on('click', function() {
+            $(document).ready(function () {
+                $('#add-to-cart-btn-detail').on('click', function () {
                     let productId = $(this).data('product-id');
                     let productStock = $(this).data('product-stock');
                     let productTitle = $(this).data('product-title');
                     let quantity = parseInt($('#quantity').val());
 
                     if (isNaN(quantity) || quantity < 1) {
-                        alert('Please enter a valid quantity.');
+                        Swal.fire('Invalid Quantity', 'Please enter a valid quantity.', 'warning');
                         return;
                     }
 
                     if (quantity > productStock) {
-                        alert('You cannot add more than ' + productStock + ' of ' + productTitle +
-                            ' to your cart.');
-                        return;
-                    }
-                    if (productStock <= 0) {
-                        alert(productTitle + ' is out of stock!');
+                        Swal.fire('Stock Limit Reached', 'You cannot add more than ' + productStock + ' of ' + productTitle + ' to your cart.', 'error');
                         return;
                     }
 
@@ -124,20 +79,23 @@
                             product_id: productId,
                             quantity: quantity
                         },
-                        success: function(response) {
+                        success: function (response) {
                             if (response.status === 'success') {
-                                alert(productTitle + ' (x' + quantity + ') added to cart!');
-                                updateCartCount(response.cartCount); // Update cart count in header
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Added to Cart!',
+                                    text: productTitle + ' (x' + quantity + ') has been added to your cart.'
+                                });
+                                updateCartCount(response.cartCount);
                             } else if (response.status === 'failed' && response.code === 202) {
-                                alert('Failed to add ' + productTitle +
-                                    ' to cart. Requested quantity exceeds stock.');
+                                Swal.fire('Error', 'Requested quantity exceeds stock.', 'error');
                             } else {
-                                alert('An error occurred. Please try again.');
+                                Swal.fire('Error', 'Something went wrong. Please try again.', 'error');
                             }
                         },
-                        error: function(xhr) {
+                        error: function (xhr) {
                             console.error("AJAX Error:", xhr.responseText);
-                            alert('Error adding to cart. Please check console for details.');
+                            Swal.fire('Error', 'An error occurred while adding to cart.', 'error');
                         }
                     });
                 });

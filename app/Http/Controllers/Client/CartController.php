@@ -26,37 +26,50 @@ class CartController extends Controller
      * Idinadagdag nito ang isang produkto sa shopping cart ng user.
      * Sinusuri din nito kung sapat pa ba ang stock ng produkto.
      */
-    public function addToCart(Request $request){
-        $cart = session()->get('cart'); // Kukunin ang kasalukuyang cart mula sa session
-        $id = $request->product_id; // Kukunin ang ID ng produkto mula sa request
-        $product = Product::where('id', $id)->first(); // Hahanapin ang produkto sa database
+    public function addToCart(Request $request)
+    {
+        $cart = session()->get('cart'); // Get current cart from session
+        $id = $request->product_id;
+        $product = Product::where('id', $id)->first(); // Fetch product from DB
 
-        // Kung ang produkto ay nasa cart na, i-update lang ang quantity
-        if(isset($cart[$id])) {
-            $quantityUpdate = $cart[$id]["quantity"] + $request->quantity; // Bagong quantity
+        // If product already in cart, update quantity
+        if (isset($cart[$id])) {
+            $quantityUpdate = $cart[$id]["quantity"] + $request->quantity;
 
-            // Kung ang bagong quantity ay mas mataas sa stock, ibalik ang error
-            if($quantityUpdate > $product->stock){
-                return response()->json(['status' => 'failed','cartCount' => count((array) session('cart')), 'code' => 202], 202);
+            if ($quantityUpdate > $product->stock) {
+                return response()->json([
+                    'status' => 'failed',
+                    'cartCount' => count((array) session('cart')),
+                    'code' => 202
+                ], 202);
             }
 
-            $cart[$id]["quantity"] = $quantityUpdate; // I-update ang quantity
-            session()->put('cart', $cart); // I-save sa session
-            return response()->json(['status' => 'success','cartCount' => count((array) session('cart')), 'code' => 201], 201);
+            $cart[$id]["quantity"] = $quantityUpdate;
+            session()->put('cart', $cart);
+            return response()->json([
+                'status' => 'success',
+                'cartCount' => count((array) session('cart')),
+                'code' => 201
+            ], 201);
         }
 
-        // Kung bago ang produkto sa cart, idagdag ito
+        // If new product, add to cart (✅ now includes image_path)
         $cart[$id] = [
-            "product_id" =>  $id,
+            "product_id" => $id,
             "title" => $product->title,
             "quantity" => $request->quantity,
             "price" => $product->price,
-            "product_stock" => $product->stock
+            "product_stock" => $product->stock,
+            "image_path" => $product->image_path // ✅ Add this line
         ];
 
-        session()->put('cart', $cart); // I-save sa session
+        session()->put('cart', $cart);
 
-        return response()->json(['status' => 'success', 'cartCount' => count((array) session('cart')), 'code' => 200], 200);
+        return response()->json([
+            'status' => 'success',
+            'cartCount' => count((array) session('cart')),
+            'code' => 200
+        ], 200);
     }
 
     /**

@@ -1,5 +1,17 @@
 @extends('client.layouts.app')
+<style>
+    .category-img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 10px;
+    }
+    .category-card {
+        text-align: center;
+        padding: 15px;
+    }
 
+</style>
 @section('content')
     <section class="container">
         <h2 class="section-heading">All Product Categories</h2>
@@ -7,13 +19,11 @@
         @if ($category->count() > 0)
             <div class="category-grid">
                 @foreach ($category as $cat)
-                    {{-- $category galing sa ClientController->category() --}}
                     <div class="category-card">
-                        {{-- Optional: Category Image (kung may 'path' attribute ang Category model mo para sa image) --}}
-                        {{-- <img src="{{ asset($cat->path ?? 'images/default-category.png') }}" alt="{{ $cat->name }}" style="max-width: 100%; height: 150px; object-fit: cover; border-radius: 4px; margin-bottom: 15px;"> --}}
-                        <h3><a href="{{ route('clientCategoryProducts', Str::slug($cat->name)) }}">{{ $cat->name }}</a>
+                        <img class="category-img" src="{{ asset($cat->image ?? 'images/default-category.png') }}" alt="{{ $cat->name }}">
+                        <h3>
+                            <a href="{{ route('clientCategoryProducts', $cat->id) }}">{{ $cat->name }}</a>
                         </h3>
-                        {{-- Pwede ring maglagay ng count ng products per category dito, hal. ({{ $cat->product->count() }} products) --}}
                     </div>
                 @endforeach
             </div>
