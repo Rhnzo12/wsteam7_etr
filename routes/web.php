@@ -8,7 +8,9 @@ use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductManController;
 use App\Http\Controllers\CartCustController;
+use App\Http\Controllers\UserController;
 use App\Models\Category;
+use Illuminate\Foundation\Auth\User;
 use Illuminate\Support\Facades\Route;
 
 // Authentication routes
@@ -77,3 +79,9 @@ Route::delete('/admin/category/{id}', [CategoryController::class, 'destroy'])->n
 Route::get('/admin/orders', [OrderController::class, 'index'])->name('admin.orders_management');
 Route::patch('/orders/{order}/status', [OrderController::class, 'updateStatus'])->name('orders.updateStatus');
 Route::delete('/admin/orders/{id}', [OrderController::class, 'destroy'])->name('admin.orders_destroy');
+
+//admin routes users
+Route::get('/admin/users', [UserController::class, 'index'])->name('admin.users_management');
+Route::delete('/admin/users/{id}', [UserController::class, 'destroy'])->name('admin.users_destroy');
+Route::get('/admin/user/create', [UserController::class, 'create'])->name('admin.user_create');
+Route::post('/admin/user/store', [UserController::class, 'store'])->name('admin.user_store');

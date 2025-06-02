@@ -1,0 +1,87 @@
+.user-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 80vh;
+    margin-top:50px;
+}
+
+.user-form {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 24px 28px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+}
+
+.form-group {
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #333;
+}
+
+.user-form input[type="text"],
+.user-form input[type="number"],
+.user-form input[type="email"] {
+    padding: 10px 12px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+    transition: border-color 0.2s;
+    background: #fafbfc;
+}
+
+.user-form input:focus,
+.user-form select:focus {
+    border-color: #007bff;
+    outline: none;
+    background: #fff;
+}
+
+.btn-add-user {
+    background: #007bff;
+    color: #fff !important;
+    border: none;
+    padding: 10px 22px;
+    border-radius: 5px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    text-decoration: none;
+}
+
+.btn-add-user:hover {
+    background: #0056b3;
+}
+.btn-add-user:hover {
+    background: #0056b3;
+}
+
+.alert-danger {
+    background: #ffe5e5;
+    color: #b30000;
+    border: 1px solid #ffb3b3;
+    padding: 12px 18px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+}
+
+.form-title {
+    text-align: center;
+    margin-bottom: 24px;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #222;
+}

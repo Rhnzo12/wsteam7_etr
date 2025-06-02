@@ -76,7 +76,7 @@
             <li><a href="{{ route('admin.product_management') }}" class="{{ request()->routeIs('admin.product_management') ? 'active' : '' }}"><i class="fa fa-box"></i> Products</a></li>
             <li><a href="{{ route('admin.category_management') }}" class="{{ request()->routeIs('admin.category_management') ? 'active' : '' }}"><i class="fa fa-list"></i> Category</a></li>
             <li><a href="{{ route('admin.orders_management') }}" class="{{ request()->routeIs('admin.orders_management') ? 'active' : '' }}"><i class="fa fa-shopping-cart"></i> Orders</a></li>
-            <li><a href="#"><i class="fa fa-users"></i> Users</a></li>
+            <li><a href="{{ route('admin.users_management') }}"><i class="fa fa-users"></i> Users</a></li>
             <li><a href="#"><i class="fa fa-chart-bar"></i> Reports</a></li>
             <li><a href="#"><i class="fa fa-tags"></i> Discounts</a></li>
             <li>
