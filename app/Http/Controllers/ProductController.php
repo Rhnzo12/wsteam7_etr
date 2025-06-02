@@ -38,9 +38,18 @@ class ProductController extends Controller
 
     //Show product
     public function show($id)
-    {
-        $product = Product::with('category')->findOrFail($id);
-        return view('products.show', compact('product'));
-    }
+        {
+            $product = Product::with('category')->findOrFail($id);
+
+            // Fetch all unique sizes for products with the same image and title
+            $sizes = Product::where('image_path', $product->image_path)
+                ->where('title', $product->title)
+                ->pluck('size')
+                ->unique()
+                ->values();
+
+            return view('products.show', compact('product', 'sizes'));
+        }
+
 
 }

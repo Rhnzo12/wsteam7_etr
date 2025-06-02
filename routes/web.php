@@ -4,9 +4,10 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\Client\CartController;
 use App\Http\Controllers\Client\ClientController;
+use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductManController;
-use App\Http\Controllers\UserController;
+use App\Http\Controllers\CartCustController;
 use App\Models\Category;
 use Illuminate\Support\Facades\Route;
 
@@ -39,6 +40,22 @@ Route::controller(CartController::class)->group(function () {
     Route::post('/cart/update', 'updateCart')->name('clientUpdateCart');
     Route::post('/cart/delete', 'deleteCart')->name('clientDeleteCart');
 });
+
+Route::get('/cartcust', [CartCustController::class, 'carts'])->name('customerCart');
+
+Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
+Route::get('/checkout', [OrderController::class, 'showCheckOut'])->name('customerCheckout');
+// Route::get('/order-history', [OrderController::class, 'orderHistory'])->name('order.history');
+Route::get('/order-history', [OrderController::class, 'orderHistory'])->name('customer.orderHistory');
+
+
+
+Route::get('/products1', [CustomerController::class, 'products'])->name('customerProducts');
+Route::get('/product1/{id}', [CustomerController::class, 'productDetail'])->name('customerProductDetail');
+Route::get('/categories1', [CustomerController::class, 'category'])->name('customerCategory');
+Route::get('/categories1/{id}', [CustomerController::class, 'categoryProducts'])->name('customerCategoryProducts');
+Route::get('/about1', [CustomerController::class, 'about'])->name('customerAbout');
+Route::post('/search1', [CustomerController::class, 'searchProduct'])->name('customerSearch');
 
 //admin routes products
 Route::get('/admin/products', [ProductManController::class, 'index'])->name('admin.product_management');

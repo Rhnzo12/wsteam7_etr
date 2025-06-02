@@ -1,4 +1,4 @@
-@extends('client.layouts.app')
+@extends('customer.layouts.apps')
 
 @section('content')
     <section class="container" style="padding: 40px 0;">
@@ -15,6 +15,7 @@
                     <thead>
                         <tr style="background-color: #f2f2f2;">
                             <th style="padding: 12px 15px; text-align: left; border-bottom: 1px solid #ddd;">Product</th>
+                            <th style="padding: 12px 15px; text-align: left; border-bottom: 1px solid #ddd;">Image</th>
                             <th style="padding: 12px 15px; text-align: left; border-bottom: 1px solid #ddd;">Price</th>
                             <th style="padding: 12px 15px; text-align: center; border-bottom: 1px solid #ddd;">Quantity</th>
                             <th style="padding: 12px 15px; text-align: left; border-bottom: 1px solid #ddd;">Subtotal</th>
@@ -28,16 +29,24 @@
                                 $total += $subtotal;
                             @endphp
                             <tr data-id="{{ $id }}">
-                                <td style="padding: 12px 15px; border-bottom: 1px solid #ddd;">{{ $details['title'] }}</td>
                                 <td style="padding: 12px 15px; border-bottom: 1px solid #ddd;">
-                                    ₱{{ number_format($details['price'], 2) }}</td>
+                                    {{ $details['title'] }}
+                                </td>
+                                <td style="padding: 12px 15px; border-bottom: 1px solid #ddd;">
+                                    <img src="{{ asset('images/' . $details['image_path']) }}" alt="{{ $details['title'] }}"
+                                        style="width: 80px; height: auto; border-radius: 4px;">
+                                </td>
+                                <td style="padding: 12px 15px; border-bottom: 1px solid #ddd;">
+                                    ₱{{ number_format($details['price'], 2) }}
+                                </td>
                                 <td style="padding: 12px 15px; border-bottom: 1px solid #ddd; text-align: center;">
                                     <input type="number" value="{{ $details['quantity'] }}" min="1"
                                         max="{{ $details['product_stock'] ?? 9999 }}" class="quantity-input"
                                         style="width: 60px; padding: 5px; border: 1px solid #ccc; border-radius: 4px; text-align: center;">
                                 </td>
                                 <td class="item-subtotal" style="padding: 12px 15px; border-bottom: 1px solid #ddd;">
-                                    ₱{{ number_format($subtotal, 2) }}</td>
+                                    ₱{{ number_format($subtotal, 2) }}
+                                </td>
                                 <td style="padding: 12px 15px; border-bottom: 1px solid #ddd; text-align: center;">
                                     <button class="remove-from-cart-btn btn-danger" data-id="{{ $id }}"
                                         data-product-title="{{ $details['title'] }}">Remove</button>
@@ -50,24 +59,20 @@
 
             <div class="cart-actions-bottom"
                 style="display: flex; justify-content: space-between; align-items: center; margin-top: 30px; flex-wrap: wrap; gap: 20px;">
-                <a href="{{ route('clientProducts') }}" class="btn-more" style="text-decoration: none;">← Continue
-                    Shopping</a>
+                <a href="{{ route('customerProducts') }}" class="btn-more" style="text-decoration: none;">← Continue Shopping</a>
+
                 <div class="cart-summary-checkout"
                     style="display: flex; flex-direction: column; align-items: flex-end; gap: 15px;">
-                    <h3 style="font-size: 1.5em; color: #333; margin: 0;">Total: <span id="cart-total"
-                            style="color: #5b21b6;">₱{{ number_format($total, 2) }}</span></h3>
-                    @guest
-                        <a href="{{ route('login') }}" class="btn-primary-custom" style="text-decoration: none;">Login to
-                            Checkout / Register</a>
-                        <p class="mt-2 text-muted" style="font-size: 0.9em; margin-top: 5px;">Please login or register to
-                            proceed with your order.</p>
-                    @else
-                        {{-- Assuming you have a checkout route for logged in users --}}
-                        <a href="{{ route('clientCheckout') }}" class="btn-primary-custom"
-                            style="text-decoration: none;">Proceed to Checkout</a>
-                    @endguest
+                    <h3 style="font-size: 1.5em; color: #333; margin: 0;">
+                        Total: <span id="cart-total" style="color:#00674F;">₱{{ number_format($total, 2) }}</span>
+                    </h3>
+
+                    <a href="{{ route('customerCheckout') }}" class="btn-primary-custom" style="text-decoration: none;">
+                        Proceed to Checkout
+                    </a>
                 </div>
             </div>
+
         @else
             <p style="text-align: center; font-size: 1.2em; color: #888;">Your cart is empty.</p>
             <div style="text-align: center; margin-top: 30px;">
@@ -78,22 +83,20 @@
 
     @push('scripts')
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> {{-- Added SweetAlert2 --}}
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
         <script>
             $(document).ready(function() {
-                // Function to update cart total on the page and global cart count
                 function refreshCartTotal(newTotal, newCartCount) {
                     $('#cart-total').text('₱' + newTotal.toLocaleString('en-PH', {
                         minimumFractionDigits: 2,
                         maximumFractionDigits: 2
                     }));
-                    if (typeof updateCartCount === 'function') { // Check if global function exists
+                    if (typeof updateCartCount === 'function') {
                         updateCartCount(newCartCount);
                     }
                 }
 
-                // Update Cart Quantity
                 $('.quantity-input').on('change', function() {
                     let $input = $(this);
                     let productId = $input.closest('tr').data('id');
@@ -106,7 +109,7 @@
                     }
 
                     if (newQuantity > maxStock) {
-                        Swal.fire({ // Use SweetAlert2 for stock warning
+                        Swal.fire({
                             icon: 'warning',
                             title: 'Stock Limit',
                             text: 'Maximum stock for this product is ' + maxStock + '.',
@@ -125,9 +128,8 @@
                                 quantity: newQuantity
                             },
                             success: function(response) {
-                                let price = parseFloat($input.closest('tr').find('td:nth-child(2)')
-                                    .text().replace('₱', '').replace(/,/g, '')
-                                );
+                                let price = parseFloat($input.closest('tr').find('td:nth-child(3)')
+                                    .text().replace('₱', '').replace(/,/g, ''));
                                 let newSubtotal = price * newQuantity;
                                 $input.closest('tr').find('.item-subtotal').text('₱' + newSubtotal
                                     .toLocaleString('en-PH', {
@@ -139,7 +141,7 @@
                             },
                             error: function(xhr) {
                                 console.error("AJAX Error:", xhr.responseText);
-                                Swal.fire({ // Use SweetAlert2 for error
+                                Swal.fire({
                                     icon: 'error',
                                     title: 'Error',
                                     text: 'Error updating cart. Please try again.',
@@ -152,10 +154,9 @@
                     $(this).data('old-quantity', $(this).val());
                 });
 
-                // Remove from Cart with SweetAlert confirmation and success message
                 $('.remove-from-cart-btn').on('click', function() {
                     let productId = $(this).data('id');
-                    let productTitle = $(this).data('product-title'); // Get product title for the message
+                    let productTitle = $(this).data('product-title');
 
                     Swal.fire({
                         title: 'Are you sure?',
@@ -175,19 +176,16 @@
                                     id: productId
                                 },
                                 success: function(response) {
-                                    $('[data-id="' + productId + '"]')
-                                        .remove(); // Remove the row
+                                    $('[data-id="' + productId + '"]').remove();
                                     refreshCartTotal(response.total, response.cartCount);
 
-                                    Swal.fire( // Success message after removal
+                                    Swal.fire(
                                         'Removed!',
-                                        productTitle +
-                                        ' has been removed from your cart.',
+                                        productTitle + ' has been removed from your cart.',
                                         'success'
                                     );
 
                                     if (response.cartCount === 0) {
-                                        // Show empty cart message and remove other elements
                                         $('.cart-table-container').html(
                                             '<p style="text-align: center; font-size: 1.2em; color: #888;">Your cart is empty.</p>'
                                         );
@@ -198,7 +196,7 @@
                                 },
                                 error: function(xhr) {
                                     console.error("AJAX Error:", xhr.responseText);
-                                    Swal.fire({ // Error message
+                                    Swal.fire({
                                         icon: 'error',
                                         title: 'Error',
                                         text: 'Error removing from cart. Please try again.',
@@ -210,14 +208,12 @@
                 });
             });
         </script>
-        {{-- Add custom styles for buttons consistent with your home page's .btn-more and .btn-primary --}}
+
         <style>
-            /* Base button styles from your home page */
             .btn-more {
                 display: inline-block;
                 padding: 10px 20px;
                 background-color: #00674F;
-                /* Your primary purple */
                 color: white;
                 text-align: center;
                 border-radius: 5px;
@@ -228,19 +224,11 @@
 
             .btn-more:hover {
                 background-color: #00674F;
-                /* Darker purple on hover */
             }
 
-            .btn-more .arrow {
-                margin-left: 5px;
-                font-size: 1.2em;
-            }
-
-            /* Custom primary button for checkout/login, similar to btn-more */
             .btn-primary-custom {
                 display: inline-block;
                 padding: 12px 25px;
-                /* Slightly larger padding */
                 background-color: #00674F;
                 color: white;
                 text-align: center;
@@ -249,17 +237,14 @@
                 font-weight: bold;
                 transition: background-color 0.3s ease;
                 white-space: nowrap;
-                /* Prevent text wrap */
             }
 
             .btn-primary-custom:hover {
-                background-color:rgb(9, 148, 116);
+                background-color: rgb(9, 148, 116);
             }
 
-            /* Red button for remove action */
             .btn-danger {
                 background-color: #dc3545;
-                /* Bootstrap red */
                 color: white;
                 border: none;
                 padding: 8px 12px;
@@ -270,10 +255,8 @@
 
             .btn-danger:hover {
                 background-color: #c82333;
-                /* Darker red on hover */
             }
 
-            /* Flex adjustments for smaller screens */
             @media (max-width: 768px) {
                 .cart-actions-bottom {
                     flex-direction: column;
@@ -282,7 +265,6 @@
 
                 .cart-summary-checkout {
                     align-items: center;
-                    /* Center align items in summary for small screens */
                 }
             }
         </style>

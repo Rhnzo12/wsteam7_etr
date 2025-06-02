@@ -1,31 +1,30 @@
 <?php
 
-namespace App\Http\Controllers\Client;
+namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\Shop;
+use Illuminate\Http\Request;
 
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
-class ClientController extends Controller
+class CustomerController extends Controller
 {
-    /**
+     /**
      * Ito ang home page ng website.
      * Dito makikita ang impormasyon ng shop at mga bagong kategorya/produkto.
      */
     public function index()
         {
             $shop = Shop::first();
-            $categories = Category::all();
+            $category = Category::all();
             $products = Product::latest()->take(8)->get(); // Or paginate()
 
-            return view('client.index', [
+            return view('customer.dashboard', [
                 'shop' => $shop,
-                'category' => $categories,
+                'category' => $category,
                 'products' => $products,
             ]);
         }
@@ -42,7 +41,7 @@ class ClientController extends Controller
             'title' => 'Products' // Ang titulo ng page
         ];
 
-        return view('client.products', $data); // Ibabalik ang 'products' view
+        return view('customer.products', $data); // Ibabalik ang 'products' view
     }
 
     /**
@@ -65,7 +64,7 @@ class ClientController extends Controller
                 'search' => $searchTerm // Ang search term para sa view
             ];
 
-            return view('client.productSearch', $data); // Ibabalik ang 'productSearch' view
+            return view('customer.productSearch', $data); // Ibabalik ang 'productSearch' view
         }
     }
 
@@ -78,7 +77,7 @@ class ClientController extends Controller
         $categories = Category::orderByDesc('id')->paginate(12);
         $products = Product::latest()->take(8)->get();
 
-        return view('client.category', [
+        return view('customer.category', [
             'shop' => $shop,
             'category' => $categories,
             'products' => $products,
@@ -96,7 +95,7 @@ class ClientController extends Controller
             // Assign products to a variable, not null
             $products = $category->products;
 
-            return view('client.categoryProducts', [
+            return view('customer.categoryProducts', [
                 'shop' => $shop,
                 'category' => $category,
                 'products' => $products,  // pass products explicitly
@@ -138,8 +137,11 @@ class ClientController extends Controller
         'title' => Str::title(str_replace('-', ' ', $product->title))
     ];
 
-    return view('client.productDetail', $data);
+    return view('customer.productDetail', $data);
 }
+
+
+
     /**
      * Ipinapakita nito ang "About Us" page ng website.
      */
@@ -149,6 +151,6 @@ class ClientController extends Controller
             'title' => 'About' // Ang titulo ng page
         ];
 
-        return view('client.about', $data); // Ibabalik ang 'about' view
+        return view('customer.about', $data); // Ibabalik ang 'about' view
     }
 }

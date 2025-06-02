@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
+use App\Models\Product;
+use App\Models\Shop;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -18,10 +21,30 @@ class AuthController extends Controller
 
     public function custDashboard()
     {
+        // Check if user is in session
         if (!session()->has('users')) {
-        return redirect('/login')->with('error', 'Please login first.');
-    }
-        return view('customer.dashboard');
+            return redirect('/login')->with('error', 'Please login first.');
+        }
+
+        // Get the user from the session
+        $user = session('users');
+
+        // Check if the user role is customer
+        if ($user->role === 'customer') {
+            $shop = Shop::first();
+            $category = Category::all();
+            $products = Product::latest()->take(8)->get(); // Or use paginate()
+
+            return view('customer.dashboard', [
+                'user' => $user,
+                'shop' => $shop,
+                'category' => $category,
+                'products' => $products,
+            ]);
+        }
+
+        // Optional: Handle other roles or fallback
+        return redirect('/')->with('error', 'Unauthorized access.');
     }
     public function loginUser(Request $request)
     {

@@ -1,4 +1,4 @@
-@extends('client.layouts.app')
+@extends('customer.layouts.apps')
 
 @section('content')
     <section class="container">
@@ -18,10 +18,10 @@
                     <div class="product-card">
                         <img src="{{ asset($item->image_path ?? 'images/default-product.png') }}" alt="{{ $item->title }}">
                         <h3>
-                            <a href="{{ route('clientProductDetail', $item->id) }}">{{ $item->title }}</a>
+                            <a href="{{ route('customerProductDetail', $item->id) }}">{{ $item->title }}</a>
                         </h3>
                         <p>₱{{ number_format($item->price, 2) }}</p>
-                        <a href="{{ route('clientProductDetail', $item->id) }}"
+                        <a href="{{ route('customerProductDetail', $item->id) }}"
                            class="add-to-cart-btn"
                            style="display: inline-block; padding: 10px 15px; background-color: #00674F; color: white; border: none; border-radius: 5px; text-decoration: none;">
                             View Product

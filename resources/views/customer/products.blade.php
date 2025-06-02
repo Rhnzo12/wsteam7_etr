@@ -1,4 +1,4 @@
-@extends('client.layouts.app')
+@extends('customer.layouts.apps')
 
 @section('content')
     <section class="container">
@@ -6,10 +6,10 @@
 
         {{-- Optional: Category Filter --}}
         <div class="category-filter" style="margin-bottom: 30px; text-align: center;">
-            <a href="{{ route('clientProducts') }}"
+            <a href="{{ route('customerProducts') }}"
                 style="margin: 0 10px; text-decoration: none; color: #00674F; font-weight: bold;">All Categories</a>
             @foreach ($category as $cat)
-                <a href="{{ route('clientCategoryProducts', $cat->id) }}"
+                <a href="{{ route('customerCategoryProducts', $cat->id) }}"
                     style="margin: 0 10px; text-decoration: none; color: #333;">{{ $cat->name }}</a>
             @endforeach
         </div>
@@ -21,11 +21,11 @@
                         {{-- Product Image --}}
                         <img src="{{ asset($item->image_path ?? 'images/default-product.png') }}" alt="{{ $item->title }}">
 
-                        <h3><a href="{{ route('clientProductDetail', $item->id) }}">{{ $item->title }}</a></h3>
+                        <h3><a href="{{ route('customerProductDetail', $item->id) }}">{{ $item->title }}</a></h3>
                         <p>₱{{ number_format($item->price, 2) }}</p>
 
                         {{-- View Product button (redirect to product detail page) --}}
-                        <a href="{{ route('clientProductDetail', $item->id) }}" class="add-to-cart-btn"
+                        <a href="{{ route('customerProductDetail', $item->id) }}" class="add-to-cart-btn"
                             style="display: inline-block; padding: 10px 15px; background-color: #00674F; color: white; border: none; border-radius: 5px; text-decoration: none;">
                             View Product
                         </a>

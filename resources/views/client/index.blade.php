@@ -28,7 +28,8 @@
 
     {{-- Hero Section --}}
      <section class="hero-section">
-       <h1>{{ $shop->desc ?? 'Style with Purpose. Designed for Everyday Living.' }}</h1>
+       <h1>Crafting Comfort for 75 Years.</h1>
+       <h3 style="color:#9B7514;">THREAD OF THE FILIPINO.</h3>
         <p>Experience fashion that feels good and does good—crafted with care, made to last, and designed to fit your lifestyle effortlessly.</p>
         <a href="{{ route('clientProducts') }}" class="btn-more">Shop Now <span class="arrow">&rarr;</span></a>
     </section>
@@ -70,7 +71,7 @@
                     <h3>
                         <img class="category-img"  src="{{ asset($cat->image ?? 'images/default-product.png') }}" alt="{{ $cat->name }}">
 
-                         <a href="{{ route('clientProductDetail', $cat->id) }}">{{ $cat->title }}</a>
+                         <a href="{{ route('clientProductDetail', $cat->id) }}">{{ $cat->name }}</a>
 
                     </h3>
                 </div>

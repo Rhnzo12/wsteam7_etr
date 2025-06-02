@@ -1,4 +1,4 @@
-@extends('client.layouts.app')
+@extends('customer.layouts.apps')
 
 @section('content')
     <section class="container" style="padding: 40px 0;">
@@ -38,7 +38,7 @@
                                 <label for="size" style="font-weight: bold; font-size: 1.1em;">Select Size:</label>
                                 <select id="size" name="size"
                                     style="width: 100px; padding: 10px; border: 1px solid #ccc; border-radius: 5px; font-size: 1em;">
-                                    <option value="" selected disabled>Choose a size</option>
+                                    <option value="" selected disabled>Choose size</option>
                                     @foreach ($sizes as $size)
                                         <option value="{{ $size }}">{{ $size }}</option>
                                     @endforeach
@@ -58,7 +58,7 @@
                                style="width: 80px; padding: 10px; border: 1px solid #ccc; border-radius: 5px; font-size: 1em;">
                         <button id="add-to-cart-btn-detail" class="add-to-cart-btn" data-product-id="{{ $product->id }}"
                                 data-product-stock="{{ $product->stock }}" data-product-title="{{ $product->title }}"
-                                style="padding: 12px 25px; background-color: #5b21b6; color: white; border: none; border-radius: 30px; cursor: pointer; font-size: 1.1em; font-weight: bold; transition: background-color 0.3s;"
+                                style="padding: 12px 25px; background-color: #00674F; color: white; border: none; border-radius: 30px; cursor: pointer; font-size: 1.1em; font-weight: bold; transition: background-color 0.3s;"
                                 {{ $product->stock <= 0 ? 'disabled' : '' }}>
                             Add to Cart
                         </button>
