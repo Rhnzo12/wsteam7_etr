@@ -280,7 +280,7 @@
             <a href="{{ route('customerCategory') }}">Category</a>
             <a href="{{ route('customer.orderHistory') }}">Order History</a>
             <a href="{{ route('customerAbout') }}">About</a>
-            <a href="">Profile</a>
+            <a href="{{ route('customer.profile') }}">Profile</a>
             <a><form method="POST" action="{{ route('logout') }}">
                     @csrf
                     <button type="submit" class="nav-link-button">

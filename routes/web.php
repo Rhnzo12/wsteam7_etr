@@ -77,3 +77,8 @@ Route::delete('/admin/category/{id}', [CategoryController::class, 'destroy'])->n
 Route::get('/admin/orders', [OrderController::class, 'index'])->name('admin.orders_management');
 Route::patch('/orders/{order}/status', [OrderController::class, 'updateStatus'])->name('orders.updateStatus');
 Route::delete('/admin/orders/{id}', [OrderController::class, 'destroy'])->name('admin.orders_destroy');
+
+//profile routes
+Route::get('/profile', [CustomerController::class, 'showProfile'])->name('customer.profile');
+Route::get('/profile/edit', [CustomerController::class, 'editProfile'])->name('customer.profile.edit');
+Route::post('/profile/update', [CustomerController::class, 'updateProfile'])->name('customer.profile.update');
