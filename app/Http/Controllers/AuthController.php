@@ -21,7 +21,7 @@ class AuthController extends Controller
         if (!session()->has('users')) {
         return redirect('/login')->with('error', 'Please login first.');
     }
-        return view('customer.dashboard');
+        return view('customer.homepage');
     }
     public function loginUser(Request $request)
     {
