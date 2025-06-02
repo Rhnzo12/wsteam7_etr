@@ -33,7 +33,7 @@
                                     {{ $details['title'] }}
                                 </td>
                                 <td style="padding: 12px 15px; border-bottom: 1px solid #ddd;">
-                                    <img src="{{ asset('images/' . $details['image_path']) }}" alt="{{ $details['title'] }}"
+                                    <img src="{{ asset($details['image_path']) }}" alt="{{ $details['title'] }}"
                                         style="width: 80px; height: auto; border-radius: 4px;">
                                 </td>
                                 <td style="padding: 12px 15px; border-bottom: 1px solid #ddd;">

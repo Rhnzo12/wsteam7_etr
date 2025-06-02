@@ -80,8 +80,15 @@ Route::get('/admin/orders', [OrderController::class, 'index'])->name('admin.orde
 Route::patch('/orders/{order}/status', [OrderController::class, 'updateStatus'])->name('orders.updateStatus');
 Route::delete('/admin/orders/{id}', [OrderController::class, 'destroy'])->name('admin.orders_destroy');
 
+<<<<<<< HEAD
 //admin routes users
 Route::get('/admin/users', [UserController::class, 'index'])->name('admin.users_management');
 Route::delete('/admin/users/{id}', [UserController::class, 'destroy'])->name('admin.users_destroy');
 Route::get('/admin/user/create', [UserController::class, 'create'])->name('admin.user_create');
 Route::post('/admin/user/store', [UserController::class, 'store'])->name('admin.user_store');
+=======
+//profile routes
+Route::get('/profile', [CustomerController::class, 'showProfile'])->name('customer.profile');
+Route::get('/profile/edit', [CustomerController::class, 'editProfile'])->name('customer.profile.edit');
+Route::post('/profile/update', [CustomerController::class, 'updateProfile'])->name('customer.profile.update');
+>>>>>>> 5d3e97254591d8bee7ed929ad7a924bdfa93fef8
