@@ -10,6 +10,12 @@ use App\Http\Controllers\UserController;
 use App\Models\Category;
 use Illuminate\Support\Facades\Route;
 
+//Customer segment use
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\CouponController;
+//
+
 // Authentication routes
 Route::get('/login', [AuthController::class, 'index'])->name('login');
 Route::post('/login', [AuthController::class, 'loginUser']);
@@ -60,3 +66,14 @@ Route::delete('/admin/category/{id}', [CategoryController::class, 'destroy'])->n
 Route::get('/admin/orders', [OrderController::class, 'index'])->name('admin.orders_management');
 Route::patch('/orders/{order}/status', [OrderController::class, 'updateStatus'])->name('orders.updateStatus');
 Route::delete('/admin/orders/{id}', [OrderController::class, 'destroy'])->name('admin.orders_destroy');
+
+//Customer routes
+Route::get('/products/{id}', [ProductController::class, 'show1']);//error
+Route::post('/cart/add', [CartController::class, 'add']);//on-test
+Route::get('/cart', [CartController::class, 'index']);//on-test
+Route::post('/checkout', [OrderController::class, 'checkoutC']);//on-test
+Route::post('/apply-coupon', [CartController::class, 'applyCoupon']);//on-test
+Route::get('/order/{id}', [OrderController::class, 'showC']);//on-test
+Route::get('/orders/history', [OrderController::class, 'historyC']);//on-test
+Route::post('/products/{id}/review', [ReviewController::class, 'store']);//error
+Route::post('/coupon/apply', [CouponController::class, 'apply']);//error
